@@ -33,9 +33,6 @@ RUN git config --global url."https://github.com/".insteadOf git://github.com/ &&
 # 6. Copy application code
 COPY . .
 
-# 7. Pre-configure database file (overwritten at runtime, but needed during boot / setup checks)
-RUN cp config/database.yml.example config/database.yml
-
 # 8. Set up ports and entrypoint
 EXPOSE 3000
 ENTRYPOINT ["/app/docker-entrypoint.sh"]
