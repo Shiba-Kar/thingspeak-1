@@ -1,4 +1,4 @@
-FROM ruby:2.1.10-slim
+FROM --platform=linux/amd64 ruby:2.1.10-slim
 
 # 1. Update APT sources to use archive.debian.org since Jessie is EOL
 RUN echo "deb http://archive.debian.org/debian/ jessie main contrib non-free" > /etc/apt/sources.list && \

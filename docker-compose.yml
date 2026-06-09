@@ -28,6 +28,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    platform: linux/amd64
     restart: always
     environment:
       - RAILS_ENV=production
@@ -57,6 +58,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    platform: linux/amd64
     restart: always
     command: ["bundle", "exec", "rake", "resque:work", "QUEUE=*"]
     environment:
