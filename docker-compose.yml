@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:5.7
+    platform: linux/amd64
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_DATABASE: thingspeak_production
+      MYSQL_ROOT_PASSWORD: root_speak_password
+      MYSQL_USER: thing
+      MYSQL_PASSWORD: speak
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  redis:
+    image: redis:alpine
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      - RAILS_ENV=production
+      - RAILS_SERVE_STATIC_FILES=true
+      - DATABASE_HOST=db
+      - DATABASE_PORT=3306
+      - DATABASE_USERNAME=thing
+      - DATABASE_PASSWORD=speak
+      - DATABASE_NAME=thingspeak_production
+      - REDIS_ENABLED=true
+      - REDIS_URL=redis://redis:6379/0
+      - API_DOMAIN=http://localhost:3000/
+      - RESET_PASSWORD_URL=http://localhost:3000/users/reset_password/
+      - SMTP_ADDRESS=smtp.gmail.com
+      - SMTP_PORT=587
+      - SMTP_DOMAIN=
+      - SMTP_AUTHENTICATION=plain
+      - SMTP_USER_NAME=
+      - SMTP_PASSWORD=
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+      - redis
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    command: ["bundle", "exec", "rake", "resque:work", "QUEUE=*"]
+    environment:
+      - RAILS_ENV=production
+      - DATABASE_HOST=db
+      - DATABASE_PORT=3306
+      - DATABASE_USERNAME=thing
+      - DATABASE_PASSWORD=speak
+      - DATABASE_NAME=thingspeak_production
+      - REDIS_ENABLED=true
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - db
+      - redis
+
+volumes:
+  mysql_data:
+  redis_data:
