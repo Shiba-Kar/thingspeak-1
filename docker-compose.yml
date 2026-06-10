@@ -1,9 +1,8 @@
-version: '3.8'
+
 
 services:
   db:
-    image: mysql:5.7
-    platform: linux/amd64
+    image: mysql:8.0
     command: --default-authentication-plugin=mysql_native_password
     restart: always
     environment:
@@ -28,7 +27,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    platform: linux/amd64
     restart: always
     environment:
       - RAILS_ENV=production
@@ -58,7 +56,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    platform: linux/amd64
     restart: always
     command: ["bundle", "exec", "rake", "resque:work", "QUEUE=*"]
     environment:

@@ -1,16 +1,9 @@
-FROM --platform=linux/amd64 ruby:2.1.10-slim
+FROM ruby:3.2.4-slim
 
-# 1. Update APT sources to use archive.debian.org since Jessie is EOL
-RUN echo "deb http://archive.debian.org/debian/ jessie main contrib non-free" > /etc/apt/sources.list && \
-    echo "deb http://archive.debian.org/debian-security jessie/updates main" >> /etc/apt/sources.list && \
-    echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/99no-check-valid-until && \
-    echo 'Acquire::AllowInsecureRepositories "true";' >> /etc/apt/apt.conf.d/99no-check-valid-until && \
-    echo 'APT::Get::AllowUnauthenticated "true";' >> /etc/apt/apt.conf.d/99no-check-valid-until
-
-# 2. Install dependencies
-RUN apt-get update && apt-get install -y --force-yes --no-install-recommends \
+# 1. Install dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
-    libmysqlclient-dev \
+    default-libmysqlclient-dev \
     git \
     nodejs \
     curl \
@@ -19,16 +12,18 @@ RUN apt-get update && apt-get install -y --force-yes --no-install-recommends \
 
 WORKDIR /app
 
-# 3. Install Bundler 1.x (since Rails 4 supports Bundler < 2.0)
-RUN gem install bundler -v '< 2.0' --no-rdoc --no-ri
+# 2. Copy Gemfile and shim
+COPY Gemfile ruby3_shim.rb ./
 
-# 4. Copy Gemfile and Gemfile.lock
-COPY Gemfile Gemfile.lock ./
+# 3. Set up Ruby 3 compatibility shim
+ENV RUBYOPT="-r/app/ruby3_shim.rb"
+
+# 4. Install Bundler 1.x (since Rails 4 supports Bundler < 2.0)
+RUN gem install bundler -v '< 2.0' --no-document
 
 # 5. Install gems
-# Rewrite git:// URLs to https:// since GitHub disabled the git:// protocol
 RUN git config --global url."https://github.com/".insteadOf git://github.com/ && \
-    bundle install --full-index --without development test
+    bundle _1.17.3_ install --without development test
 
 # 6. Copy application code
 COPY . .

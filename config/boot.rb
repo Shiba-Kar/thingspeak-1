@@ -1,4 +1,5 @@
 require 'rubygems'
+require File.expand_path('../../ruby3_shim.rb', __FILE__)
 
 # Set up gems listed in the Gemfile.
 gemfile = File.expand_path('../../Gemfile', __FILE__)

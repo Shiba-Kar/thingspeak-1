@@ -1,16 +1,16 @@
-source 'http://rubygems.org'
+source 'https://rubygems.org'
 
 gem 'rails', '4.0.5'
 gem 'jquery-rails', '3.0.4'
 gem 'rails_autolink'
-gem 'mysql2'
+gem 'mysql2', '~> 0.5.3'
 gem 'devise'
-gem 'twitter_oauth', git: 'git://github.com/moomerman/twitter_oauth.git'
-gem 'therubyracer'
+gem 'twitter_oauth', git: 'https://github.com/moomerman/twitter_oauth.git', ref: '712430503037b144d8dffb2f4964b485d51485a8'
+# gem 'therubyracer' (not needed with nodejs runtime in Docker)
 gem 'exception_notification'
 gem 'nested_form'
 gem 'dalli'
-gem 'kgio'
+# gem 'kgio' (incompatible with Ruby 3, not needed for Puma)
 gem 'will_paginate', '~> 3.0.pre2'
 gem 'will_paginate-bootstrap'
 gem 'nokogiri'
@@ -23,13 +23,13 @@ gem 'redis'
 gem 'resque-scheduler', '2.3.1', :require => 'resque_scheduler'
 gem 'daemons'
 #gem 'db2fog' (not compatible with Rails 4, see https://github.com/hakanensari/db2fog for Rails 4 version)
-gem 'simplificator-rwebthumb', :git => "git://github.com/simplificator/rwebthumb.git"
+gem 'simplificator-rwebthumb', git: 'https://github.com/simplificator/rwebthumb.git', ref: 'dbd96a62787201f7bf901c39c8df003a22b45ec9'
 gem 'tweetstream'
 gem 'capistrano', '~> 2.15.4'
 gem 'rack-utf8_sanitizer'
 gem 'newrelic_rpm'
 gem 'actionpack-xml_parser'
-gem 'activeadmin', github: 'gregbell/active_admin'
+gem 'activeadmin', git: 'https://github.com/activeadmin/activeadmin.git', ref: '0c83cfe0b9b43a4a27a63c13f27d6682b0ff6cae'
 gem 'chronic'
 gem 'non-stupid-digest-assets'
 gem 'em-http-request'
@@ -54,7 +54,7 @@ group :development do
 end
 
 group :test do
-  gem 'sqlite3-ruby', '1.3.3', :require => 'sqlite3'
+  gem 'sqlite3', '~> 1.4'
   gem 'rspec-rails', '~> 2.14.1'
   gem 'spork'
   gem 'factory_girl_rails'
